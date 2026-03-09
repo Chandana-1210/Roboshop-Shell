@@ -28,7 +28,7 @@ if [ ! -d $DEST_DIR ]; then
     exit 1
 fi
 
-old_files= $(find $SOURCE_DIR -name "*.txt" -type f -mtime +5)
+old_files= $(find $SOURCE_DIR -name "*.txt" -type f -mtime +6)
 
 if [ ! -z "${old_files}" ]; then
     time_stamp=$(date +%F-%H-%M)
@@ -36,8 +36,8 @@ if [ ! -z "${old_files}" ]; then
     find $SOURCE_DIR -name "*.txt" -type f -mtime +5| zip @ -j $ZIP_FILE_NAME
 fi
 if [ -f $ZIP_FILE_NAME ]; then 
-    echo "$G archiving ....success....$N"
-    while IFS= real -r filepath 
+    echo -e "$G archiving ....success....$N"
+    while IFS= read -r filepath 
         do
             echo -e "$Y deleting log files successfully $N"
             rm -rf $filepath
