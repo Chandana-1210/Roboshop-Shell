@@ -21,29 +21,29 @@ if [ $# -lt 2 ]; then
     USAGE
 fi
 
-if [ ! -d $SOURCE_DIR ]; then
+if [ ! -d "$SOURCE_DIR" ]; then
     echo -e "$R $SOURCE_DIR does not exists $N"
     exit 1
 fi
 
-if [ ! -d $DEST_DIR ]; then
+if [ ! -d "$DEST_DIR" ]; then
     echo -e "$R $DEST_DIR does not exists $N"
     exit 1
 fi
 
-old_files=$(find $SOURCE_DIR -name "*.txt" -type f -mtime +$DAYS)
+old_files=$(find "$SOURCE_DIR" -name "*.txt" -type f -mtime +"$DAYS")
 
 if [ ! -z "${old_files}" ]; then
     time_stamp=$(date +%F-%H-%M)
     ZIP_FILE_NAME="$DEST_DIR/applog-$time_stamp.zip"
-    find "$SOURCE_DIR" -name "*.txt" -type f -mtime +$DAYS | zip -@ -j "$ZIP_FILE_NAME"
+    find "$SOURCE_DIR" -name "*.txt" -type f -mtime +"$DAYS" | zip -@ -j "$ZIP_FILE_NAME"
 
-    if [ -f $ZIP_FILE_NAME ]; then 
+    if [ -f "$ZIP_FILE_NAME" ]; then 
         echo -e "$G archiving ....success....$N"
         while IFS= read -r filepath 
             do
                 echo -e "$Y deleting log files successfully $N"
-                rm -rf $filepath
+                rm -f "$filepath"
                 echo -e "$G deleted log files successfully $N"
             done <<< $old_files
     else
