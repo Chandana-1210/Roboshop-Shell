@@ -28,19 +28,25 @@ if [ ! -d $DEST_DIR ]; then
     exit 1
 fi
 
-old_files= $(find $SOURCE_DIR -name "*.txt" -type f -mtime +6)
+old_files= $(find $SOURCE_DIR -name "*.txt" -type f -mtime +5)
 
 if [ ! -z "${old_files}" ]; then
     time_stamp=$(date +%F-%H-%M)
     ZIP_FILE_NAME="$DEST_DIR/applog-time_stamp.zip"
     find $SOURCE_DIR -name "*.txt" -type f -mtime +5| zip @ -j $ZIP_FILE_NAME
-fi
-if [ -f $ZIP_FILE_NAME ]; then 
-    echo -e "$G archiving ....success....$N"
-    while IFS= read -r filepath 
-        do
-            echo -e "$Y deleting log files successfully $N"
-            rm -rf $filepath
-            echo -e "$G deleted log files successfully $N"
-        done <<< $old_files
+
+    if [ -f $ZIP_FILE_NAME ]; then 
+        echo -e "$G archiving ....success....$N"
+        while IFS= read -r filepath 
+            do
+                echo -e "$Y deleting log files successfully $N"
+                rm -rf $filepath
+                echo -e "$G deleted log files successfully $N"
+            done <<< $old_files
+    else
+        echo "Archieval ... $R FAILURE $N"
+        exit 1
+    fi
+else 
+    echo -e "No files to archeive ... $Y SKIPPING $N"
 fi
