@@ -10,7 +10,7 @@ if [ $USER_ID -ne 0 ]; then
 fi
 
 SOURCE_DIR="/home/ec2-user/app-logs"
-if[ ! -d $SOURCE_DIR]; then 
+if [ ! -d $SOURCE_DIR]; then 
     echo -e "$R $SOURCE_DIR does not exists $N"
     exit 1
 fi
