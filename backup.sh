@@ -3,6 +3,9 @@ R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
+SOURCE_DIR=$1
+DEST_DIR=$2
+DAYS=$(3:-14)
 
 if [ $USER_ID -ne 0 ]; then 
     echo -e "$R ERROR :: Please run the script with root priveleges $N"
@@ -28,12 +31,12 @@ if [ ! -d $DEST_DIR ]; then
     exit 1
 fi
 
-old_files= $(find $SOURCE_DIR -name "*.txt" -type f -mtime +5)
+old_files=$(find $SOURCE_DIR -name "*.txt" -type f -mtime +$DAYS)
 
 if [ ! -z "${old_files}" ]; then
     time_stamp=$(date +%F-%H-%M)
-    ZIP_FILE_NAME="$DEST_DIR/applog-time_stamp.zip"
-    find $SOURCE_DIR -name "*.txt" -type f -mtime +5| zip @ -j $ZIP_FILE_NAME
+    ZIP_FILE_NAME="$DEST_DIR/applog-$time_stamp.zip"
+    find $SOURCE_DIR -name "*.txt" -type f -mtime +$DAYS| zip @ -j $ZIP_FILE_NAME
 
     if [ -f $ZIP_FILE_NAME ]; then 
         echo -e "$G archiving ....success....$N"
