@@ -15,7 +15,7 @@ if [ ! -d $SOURCE_DIR ]; then
     exit 1
 fi
 
-delete_old_logs=$(find $SOURCE_DIR -name "*.txt" -type f -mtime +14)
+delete_old_logs=$(find $SOURCE_DIR -name "*.txt" -type f -mtime +5)
 while IFS= read -r filepath 
     do
         echo -e "$Y deleting log files successfully $N"
