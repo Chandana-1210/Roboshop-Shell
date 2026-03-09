@@ -36,7 +36,7 @@ old_files=$(find $SOURCE_DIR -name "*.txt" -type f -mtime +$DAYS)
 if [ ! -z "${old_files}" ]; then
     time_stamp=$(date +%F-%H-%M)
     ZIP_FILE_NAME="$DEST_DIR/applog-$time_stamp.zip"
-    find $SOURCE_DIR -name "*.txt" -type f -mtime +$DAYS| zip @ -j $ZIP_FILE_NAME
+    find $SOURCE_DIR -name "*.txt" -type f -mtime +$DAYS | zip @ -j $ZIP_FILE_NAME
 
     if [ -f $ZIP_FILE_NAME ]; then 
         echo -e "$G archiving ....success....$N"
@@ -47,7 +47,7 @@ if [ ! -z "${old_files}" ]; then
                 echo -e "$G deleted log files successfully $N"
             done <<< $old_files
     else
-        echo "Archieval ... $R FAILURE $N"
+        echo -e "Archieval ... $R FAILURE $N"
         exit 1
     fi
 else 
