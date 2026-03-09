@@ -1,55 +1,77 @@
-USER_ID=$(id -u)
+#!/bin/bash
+
+USERID=$(id -u)
 R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
 SOURCE_DIR=$1
 DEST_DIR=$2
-DAYS=${3:-14}
+DAYS=${3:-14} # if not provided considered as 14 days
 
-if [ $USER_ID -ne 0 ]; then 
-    echo -e "$R ERROR :: Please run the script with root priveleges $N"
-    exit 1
+LOGS_FOLDER="/var/log/shell-script"
+SCRIPT_NAME=$( echo $0 | cut -d "." -f1 )
+#LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log"
+LOG_FILE="$LOGS_FOLDER/backup.log" # modified to run the script as
+
+mkdir -p $LOGS_FOLDER
+echo "Script started executed at: $(date)" | tee -a $LOG_FILE
+
+if [ $USERID -ne 0 ]; then
+    echo "ERROR:: Please run this script with root privelege"
+    exit 1 # failure is other than 0
 fi
 
 USAGE(){
-    echo -e "$R sh backup.sh <SOURCE_dir> <DEST_dir> <DAYS> $N"
+    echo -e "$R USAGE:: sudo sh 24-backup.sh <SOURCE_DIR> <DEST_DIR> <DAYS>[optional, default 14 days] $N"
     exit 1
 }
 
-if [ $# -lt 2 ]; then 
+### Check SOURCE_DIR and DEST_DIR passed or not ####
+if [ $# -lt 2 ]; then
     USAGE
 fi
 
-if [ ! -d "$SOURCE_DIR" ]; then
-    echo -e "$R $SOURCE_DIR does not exists $N"
+### Check SOURCE_DIR Exist ####
+if [ ! -d $SOURCE_DIR ]; then
+    echo -e "$R Source $SOURCE_DIR does not exist $N"
     exit 1
 fi
 
-if [ ! -d "$DEST_DIR" ]; then
-    echo -e "$R $DEST_DIR does not exists $N"
+### Check DEST_DIR Exist ####
+if [ ! -d $DEST_DIR ]; then
+    echo -e "$R Destination $DEST_DIR does not exist $N"
     exit 1
 fi
 
-old_files=$(find "$SOURCE_DIR" -name "*.txt" -type f -mtime +"$DAYS")
+### Find the files ####
+FILES=$(find $SOURCE_DIR -name "*.log" -type f -mtime +$DAYS)
 
-if [ ! -z "${old_files}" ]; then
-    time_stamp=$(date +%F-%H-%M)
-    ZIP_FILE_NAME="$DEST_DIR/applog-$time_stamp.zip"
-    find "$SOURCE_DIR" -name "*.txt" -type f -mtime +"$DAYS" | zip -@ -j "$ZIP_FILE_NAME"
 
-    if [ -f "$ZIP_FILE_NAME" ]; then 
-        echo -e "$G archiving ....success....$N"
-        while IFS= read -r filepath 
-            do
-                echo -e "$Y deleting log files successfully $N"
-                rm -f "$filepath"
-                echo -e "$G deleted log files successfully $N"
-            done <<< $old_files
+if [ ! -z "${FILES}" ]; then
+    ### Start Archeiving ###
+    echo "Files found: $FILES"
+    TIMESTAMP=$(date +%F-%H-%M)
+    ZIP_FILE_NAME="$DEST_DIR/app-logs-$TIMESTAMP.zip"
+    echo "Zip file name: $ZIP_FILE_NAME"
+    find $SOURCE_DIR -name "*.log" -type f -mtime +$DAYS | zip -@ -j "$ZIP_FILE_NAME"
+
+    ### Check Archieval Success or not ###
+    if [ -f $ZIP_FILE_NAME ]
+    then
+        echo -e "Archeival ... $G SUCCESS $N"
+
+        ### Delete if success ###
+        while IFS= read -r filepath
+        do
+            echo "Deleting the file: $filepath"
+            rm -rf $filepath
+            echo "Deleted the file: $filepath"
+        done <<< $FILES
     else
-        echo -e "Archieval ... $R FAILURE $N"
+        echo "Archieval ... $R FAILURE $N"
         exit 1
     fi
-else 
+else
     echo -e "No files to archeive ... $Y SKIPPING $N"
 fi
