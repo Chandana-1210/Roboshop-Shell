@@ -53,7 +53,7 @@ dnf install nodejs -y &>>$LOG_FILE
 Validate $? "installing nodejs"
 npm install &>>$LOG_FILE
 Validate $? "installing dependencies"
-chown -R roboshop:roboshop app/ &>>$LOG_FILE
+chown -R roboshop:roboshop /app &>>$LOG_FILE
 Validate $? "changing ownership from root to roboshop"
 dnf install mongodb-mongosh -y &>>$LOG_FILE
 Validate $? "installing mongodb client"
