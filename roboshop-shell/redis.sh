@@ -11,7 +11,7 @@ SCRIPT_NAME=$( echo $0 | cut -d "." -f1 )
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" # /var/log/shell-script/16-logs.log
 SCRIPT_DIR=$PWD
 mkdir -p $LOGS_FOLDER
-START_TIME=$(date+%s)
+START_TIME=$(date +%s)
 echo "Script started executed at: $(date)" | tee -a $LOG_FILE
 
 if [ $USERID -ne 0 ]; then
@@ -47,6 +47,6 @@ VALIDATE $? "Allowing remote connections to redis"
 
 systemctl restart redis
 VALIDATE $? "Restarted redis"
-END_TIME=$(date+%s)
+END_TIME=$(date +%s)
 TOTAL_TIME=$(($END_TIME-$START_TIME))
 echo -e "$G script execution completed in $TOTAL_TIME sec"
