@@ -41,7 +41,7 @@ systemctl start rabbitmq-server
 Validate $? "Start rabbitmq"
 rabbitmqctl add_user roboshop roboshop123 &>>$LOG_FILE
 rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*" &>>$LOG_FILE
-VALIDATE $? "Setting up permissions"
+Validate $? "Setting up permissions"
 END_TIME=$(date +%s)
 TOTAL_TIME=$(($END_TIME-$START_TIME))
 echo -e "$G script execution completed in $TOTAL_TIME sec"
