@@ -37,7 +37,7 @@ fi
 
 mkdir -p /app
 Validate $? "create app directory if not exists"
-curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip $LOG_FILE
+curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOG_FILE
 Validate $? "copy code to tempory folder"
 cd /app
 Validate $? "changing the directory"
@@ -53,13 +53,13 @@ dnf install nodejs -y &>>$LOG_FILE
 Validate $? "installing nodejs"
 npm install &>>$LOG_FILE
 Validate $? "installing dependencies"
-chown -R roboshop:roboshop app/
+chown -R roboshop:roboshop app/ &>>$LOG_FILE
 Validate $? "changing ownership from root to roboshop"
 dnf install mongodb-mongosh -y &>>$LOG_FILE
 Validate $? "installing mongodb client"
-cp catalogue.service /etc/systemd/system/catalogue.service
+cp catalogue.service /etc/systemd/system/catalogue.service &>>$LOG_FILE
 Validate $? "Copying catalogue services"
-INDEX=$(mongosh mongodb.daws86s.fun --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
+INDEX=$(mongosh mongodb.daws86s.fun --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')") &>>$LOG_FILE
 if [ $INDEX -le 0 ]; then
     mongosh --host $MONGODB_HOST </app/db/master-data.js &>>$LOG_FILE
     VALIDATE $? "Load catalogue products"
@@ -67,9 +67,9 @@ else
     echo -e "Catalogue products already loaded ... $Y SKIPPING $N"
 fi
 
-systemctl daemon-reload
+systemctl daemon-reload &>>$LOG_FILE
 Validate $? "reloading background services"
-systemctl enable catalogue
+systemctl enable catalogue &>>$LOG_FILE
 Validate $? "enabling catlogue service"
-systemctl start catalogue
+systemctl start catalogue &>>$LOG_FILE
 Validate $? "Starting catlogue service"
