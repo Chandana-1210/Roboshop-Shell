@@ -19,7 +19,7 @@ if [ $USERID -ne 0 ]; then
     exit 1 # failure is other than 0
 fi
 
-VALIDATE(){ # functions receive inputs through args just like shell script args
+Validate(){ # functions receive inputs through args just like shell script args
     if [ $1 -ne 0 ]; then
         echo -e "$2 ... $R FAILURE $N" | tee -a $LOG_FILE
         exit 1
@@ -29,22 +29,22 @@ VALIDATE(){ # functions receive inputs through args just like shell script args
 }
 
 cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
-VALIDATE $? "Adding Mongo repo"
+Validate $? "Adding Mongo repo"
 
 dnf install mongodb-org -y &>>$LOG_FILE
-VALIDATE $? "Installing MongoDB"
+Validate $? "Installing MongoDB"
 
 systemctl enable mongod &>>$LOG_FILE
-VALIDATE $? "Enable MongoDB"
+Validate $? "Enable MongoDB"
 
 systemctl start mongod 
-VALIDATE $? "Start MongoDB"
+Validate $? "Start MongoDB"
 
 sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf
-VALIDATE $? "Allowing remote connections to MongoDB"
+Validate $? "Allowing remote connections to MongoDB"
 
 systemctl restart mongod
-VALIDATE $? "Restarted MongoDB"
+Validate $? "Restarted MongoDB"
 END_TIME=$(date +%s)
 TOTAL_TIME=$(($END_TIME-$START_TIME))
 echo -e "$G script execution completed in $TOTAL_TIME sec"

@@ -19,7 +19,7 @@ if [ $USERID -ne 0 ]; then
     exit 1 # failure is other than 0
 fi
 
-VALIDATE(){ # functions receive inputs through args just like shell script args
+Validate(){ # functions receive inputs through args just like shell script args
     if [ $1 -ne 0 ]; then
         echo -e "$2 ... $R FAILURE $N" | tee -a $LOG_FILE
         exit 1
@@ -34,19 +34,19 @@ dnf  module enable redis:7 -y &>>$LOG_FILE
 Validate $? "enabling redis with version as 7"
 
 dnf install redis -y &>>$LOG_FILE
-VALIDATE $? "Installing redis"
+Validate $? "Installing redis"
 
 systemctl enable redis &>>$LOG_FILE
-VALIDATE $? "Enable redis"
+Validate $? "Enable redis"
 
 systemctl start redis 
-VALIDATE $? "Start redis"
+Validate $? "Start redis"
 
 sed -i -e 's/127.0.0.1/0.0.0.0/g' -e '/protected-mode/c protected-mode no' /etc/redis/redis.conf
-VALIDATE $? "Allowing remote connections to redis"
+Validate $? "Allowing remote connections to redis"
 
 systemctl restart redis
-VALIDATE $? "Restarted redis"
+Validate $? "Restarted redis"
 END_TIME=$(date +%s)
 TOTAL_TIME=$(($END_TIME-$START_TIME))
 echo -e "$G script execution completed in $TOTAL_TIME sec"
