@@ -57,7 +57,7 @@ chown -R roboshop:roboshop app/ &>>$LOG_FILE
 Validate $? "changing ownership from root to roboshop"
 dnf install mongodb-mongosh -y &>>$LOG_FILE
 Validate $? "installing mongodb client"
-cp catalogue.service /etc/systemd/system/catalogue.service &>>$LOG_FILE
+cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service &>>$LOG_FILE
 Validate $? "Copying catalogue services"
 INDEX=$(mongosh mongodb.daws86s.fun --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')") &>>$LOG_FILE
 if [ $INDEX -le 0 ]; then
