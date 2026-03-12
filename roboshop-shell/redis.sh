@@ -28,23 +28,25 @@ VALIDATE(){ # functions receive inputs through args just like shell script args
     fi
 }
 
-cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
-VALIDATE $? "Adding Mongo repo"
+dnf  module disable redis -y &>>$LOG_FILE
+Validate $? "disabling redis"
+dnf  module enable redis:7 -y &>>$LOG_FILE
+Validate $? "enabling redis with version as 7"
 
-dnf install mongodb-org -y &>>$LOG_FILE
-VALIDATE $? "Installing MongoDB"
+dnf install redis -y &>>$LOG_FILE
+VALIDATE $? "Installing redis"
 
-systemctl enable mongod &>>$LOG_FILE
-VALIDATE $? "Enable MongoDB"
+systemctl enable redis &>>$LOG_FILE
+VALIDATE $? "Enable redis"
 
-systemctl start mongod 
-VALIDATE $? "Start MongoDB"
+systemctl start redis 
+VALIDATE $? "Start redis"
 
-sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf
-VALIDATE $? "Allowing remote connections to MongoDB"
+sed -i -e 's/127.0.0.1/0.0.0.0/g' -e '/protected-mode/c protected-mode no' /etc/redis/redis.conf
+VALIDATE $? "Allowing remote connections to redis"
 
-systemctl restart mongod
-VALIDATE $? "Restarted MongoDB"
+systemctl restart redis
+VALIDATE $? "Restarted redis"
 END_TIME=$(date+%s)
 TOTAL_TIME=$(($END_TIME-$START_TIME))
 echo -e "$G script execution completed in $TOTAL_TIME sec"

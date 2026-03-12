@@ -12,6 +12,7 @@ LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" # /var/log/shell-script/16-logs.log
 MONGODB_HOST="mongodb.daws-86.shop"
 SCRIPT_DIR=$PWD
 mkdir -p $LOGS_FOLDER
+START_TIME=$(date+%s)
 echo "Script started executed at: $(date)" | tee -a $LOG_FILE
 
 if [ $USERID -ne 0 ]; then
@@ -75,3 +76,6 @@ systemctl enable catalogue &>>$LOG_FILE
 Validate $? "enabling catlogue service"
 systemctl start catalogue &>>$LOG_FILE
 Validate $? "Starting catlogue service"
+END_TIME=$(date+%s)
+TOTAL_TIME=$(($END_TIME-$START_TIME))
+echo -e "$G script execution completed in $TOTAL_TIME sec"
