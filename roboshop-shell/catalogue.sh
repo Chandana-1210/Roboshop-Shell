@@ -19,7 +19,7 @@ if [ $USERID -ne 0 ]; then
     exit 1 # failure is other than 0
 fi
 
-VALIDATE(){ # functions receive inputs through args just like shell script args
+Validate(){ # functions receive inputs through args just like shell script args
     if [ $1 -ne 0 ]; then
         echo -e "$2 ... $R FAILURE $N" | tee -a $LOG_FILE
         exit 1
@@ -62,7 +62,7 @@ Validate $? "Copying catalogue services"
 INDEX=$(mongosh mongodb.daws86s.fun --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')") &>>$LOG_FILE
 if [ $INDEX -le 0 ]; then
     mongosh --host $MONGODB_HOST </app/db/master-data.js &>>$LOG_FILE
-    VALIDATE $? "Load catalogue products"
+    Validate $? "Load catalogue products"
 else
     echo -e "Catalogue products already loaded ... $Y SKIPPING $N"
 fi
