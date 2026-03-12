@@ -28,19 +28,20 @@ Validate(){ # functions receive inputs through args just like shell script args
     fi
 }
 
+cp $SCRIPT_DIR/rabbitmq.repo /etc/yum.repos.d/rabbitmq.repo
+Validate $? "Adding rabbitmq repo"
 
+dnf install rabbitmq-server -y &>>$LOG_FILE
+Validate $? "Installing rabbitmq"
 
-dnf install mysql-server -y &>>$LOG_FILE
-Validate $? "Installing mysql"
+systemctl enable rabbitmq-server &>>$LOG_FILE
+Validate $? "Enable rabbitmq"
 
-systemctl enable mysqld &>>$LOG_FILE
-Validate $? "Enable mysql"
-
-systemctl start mysqld &>>$LOG_FILE
-Validate $? "Start mysql"
-
-mysql_secure_installation --set-root-pass Roboshop@1 &>>$LOG_FILE
-VALIDATE $? "Setting up Root password"
+systemctl start rabbitmq-server
+Validate $? "Start rabbitmq"
+rabbitmqctl add_user roboshop roboshop123 &>>$LOG_FILE
+rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*" &>>$LOG_FILE
+VALIDATE $? "Setting up permissions"
 END_TIME=$(date +%s)
 TOTAL_TIME=$(($END_TIME-$START_TIME))
 echo -e "$G script execution completed in $TOTAL_TIME sec"
