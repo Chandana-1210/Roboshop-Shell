@@ -45,9 +45,9 @@ rm -rf /app/*
 Validate $? "remove existing files in app directory"
 unzip /tmp/catalogue.zip &>> $LOG_FILE
 Validate $? "unzip code"
-dnf disable module nodejs -y &>>$LOG_FILE
+dnf  module disable nodejs -y &>>$LOG_FILE
 Validate $? "disabling nodejs"
-dnf enable module nodejs:20 -y &>>$LOG_FILE
+dnf  module enable nodejs:20 -y &>>$LOG_FILE
 Validate $? "enabling nodejs with version as 20"
 dnf install nodejs -y &>>$LOG_FILE
 Validate $? "installing nodejs"
