@@ -55,6 +55,8 @@ npm install &>>$LOG_FILE
 Validate $? "installing dependencies"
 chown -R roboshop:roboshop /app &>>$LOG_FILE
 Validate $? "changing ownership from root to roboshop"
+cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
+VALIDATE $? "Adding Mongo repo"
 dnf install mongodb-mongosh -y &>>$LOG_FILE
 Validate $? "installing mongodb client"
 cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service &>>$LOG_FILE
