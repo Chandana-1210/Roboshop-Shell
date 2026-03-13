@@ -41,7 +41,7 @@ Validate $? "changing to nginx directory"
 unzip /tmp/frontend.zip &>>$LOG_FILE
 Validate $? "downlodaing frontend code"
 rm -rf /etc/nginx/nginx.conf &>>$LOG_FILE
-cp $SCRIPT_DIR/nginx.conf /ect/nginx/nginx.conf
+cp $SCRIPT_DIR/nginx.conf /etc/nginx/nginx.conf
 Validate $? "copying nginx.conf"
 systemctl start nginx
 Validate $? "Starting nginx"
