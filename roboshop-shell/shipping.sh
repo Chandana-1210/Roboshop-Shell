@@ -13,6 +13,7 @@ SCRIPT_DIR=$PWD
 mkdir -p $LOGS_FOLDER
 START_TIME=$(date +%s)
 echo "Script started executed at: $(date)" | tee -a $LOG_FILE
+MYSQL_HOST=mysql.daws-86.shop
 
 if [ $USERID -ne 0 ]; then
     echo "ERROR:: Please run this script with root privelege"

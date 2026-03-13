@@ -62,7 +62,7 @@ dnf install mongodb-mongosh -y &>>$LOG_FILE
 Validate $? "installing mongodb client"
 cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service &>>$LOG_FILE
 Validate $? "Copying catalogue services"
-INDEX=$(mongosh mongodb.daws86s.fun --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')") &>>$LOG_FILE
+INDEX=$(mongosh $MONGODB_HOST --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')") &>>$LOG_FILE
 if [ $INDEX -le 0 ]; then
     mongosh --host $MONGODB_HOST </app/db/master-data.js &>>$LOG_FILE
     Validate $? "Load catalogue products"
