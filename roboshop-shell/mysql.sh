@@ -40,7 +40,7 @@ systemctl start mysqld &>>$LOG_FILE
 Validate $? "Start mysql"
 
 mysql_secure_installation --set-root-pass Roboshop@1 &>>$LOG_FILE
-VALIDATE $? "Setting up Root password"
+Validate $? "Setting up Root password"
 END_TIME=$(date +%s)
 TOTAL_TIME=$(($END_TIME-$START_TIME))
 echo -e "$G script execution completed in $TOTAL_TIME sec"
