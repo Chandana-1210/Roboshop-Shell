@@ -1,7 +1,7 @@
 #!/bin/bash
 AMI_ID="ami-0220d79f3f480ecf5"
 SG_ID="sg-0479e9fb6925e23b3"
-ZONE_ID="Z046580427ETIC1F2T1FJ"
+ZONE_ID="Z0700351E0PXNQD3MI1"
 DOMAIN_NAME="daws-86.shop"
 for instance in $@
     do
