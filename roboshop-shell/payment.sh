@@ -37,42 +37,28 @@ fi
 
 mkdir -p /app
 Validate $? "create app directory if not exists"
-curl -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip &>>$LOG_FILE
+curl -o /tmp/payment.zip https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip &>>$LOG_FILE
 Validate $? "copy code to tempory folder"
 cd /app
 Validate $? "changing the directory"
 rm -rf /app/*
 Validate $? "remove existing files in app directory"
-unzip /tmp/shipping.zip &>> $LOG_FILE
+unzip /tmp/payment.zip &>> $LOG_FILE
 Validate $? "unzip code"
-dnf install maven -y &>>$LOG_FILE
-Validate $? "installing maven"
-mvn clean package &>>$LOG_FILE
+dnf install python3 gcc python3-devel -y &>>$LOG_FILE
+Validate $? "installing python and its dependences"
+pip3 install -r requirements.txt &>>$LOG_FILE
 Validate $? "installing dependencies"
 chown -R roboshop:roboshop /app &>>$LOG_FILE
 Validate $? "changing ownership from root to roboshop"
-mv target/shipping-1.0.jar shipping.jar &>>$LOG_FILE
-Validate $? "moving shipping jar"
-cp $SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service &>>$LOG_FILE
-Validate $? "Copying shipping services"
+cp $SCRIPT_DIR/payment.service /etc/systemd/system/payment.service &>>$LOG_FILE
+Validate $? "Copying payment services"
 systemctl daemon-reload &>>$LOG_FILE
 Validate $? "reloading background services"
-systemctl enable shipping &>>$LOG_FILE
-Validate $? "enabling shipping service"
-systemctl start shipping &>>$LOG_FILE
-Validate $? "Starting shipping service"
-dnf install mysql -y &>>$LOG_FILE
-Validate $? "Installing mysql"
-mysql -h $MYSQL_HOST -uroot -pRoboShop@1 -e 'use cities' &>>$LOG_FILE
-if [ $? -ne 0 ]; then
-    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql &>>$LOG_FILE
-    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql  &>>$LOG_FILE
-    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql &>>$LOG_FILE
-else
-    echo -e "Shipping data is already loaded ... $Y SKIPPING $N"
-fi
-systemctl restart shipping &>>$LOG_FILE
-Validate $? "Restarting shipping service"
+systemctl enable payment &>>$LOG_FILE
+Validate $? "enabling payment service"
+systemctl start payment &>>$LOG_FILE
+Validate $? "Starting payment service"
 END_TIME=$(date +%s)
 TOTAL_TIME=$(($END_TIME-$START_TIME))
 echo -e "$G script execution completed in $TOTAL_TIME sec"
